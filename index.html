@@ -24,7 +24,7 @@ button { width: 150px; }
 <p id="status"></p>
 
 <script>
-const SCRIPT_URL = "COLE_AQUI_SUA_URL_DO_APP_SCRIPT";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_oATuDvJigf3VqQnSCxWNU9Cqynrd2GXoN7wTbp3PTTJEoeVqjmgRxAFNeMNGWDfA/exec";
 
 function capturar(posicao) {
   const area = document.getElementById('area').value.trim();
@@ -45,18 +45,28 @@ function capturar(posicao) {
   function success(position) {
     const lat = position.coords.latitude.toFixed(6);
     const lon = position.coords.longitude.toFixed(6);
-    const url = `${SCRIPT_URL}?area=${encodeURIComponent(area)}&posicao=${posicao}&lat=${lat}&lon=${lon}`;
 
-fetch('https://script.google.com/macros/s/AKfycbxExemploDaSuaURL/exec', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    doca: doca,
-    ponto: ponto,
-    lat: latitude,
-    lng: longitude
-  })
-})
+    // Envia os dados para o Google Apps Script
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        doca: area,
+        ponto: posicao,
+        lat: lat,
+        lng: lon
+      })
+    })
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('status').innerText =
+        `✅ ${area} - Posição ${posicao} salva (${lat}, ${lon})`;
+    })
+    .catch(err => {
+      document.getElementById('status').innerText =
+        "❌ Erro ao enviar para planilha: " + err;
+    });
+  }
 
   function error(err) {
     document.getElementById('status').innerText =
@@ -66,4 +76,3 @@ fetch('https://script.google.com/macros/s/AKfycbxExemploDaSuaURL/exec', {
 </script>
 </body>
 </html>
-
