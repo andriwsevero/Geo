@@ -47,14 +47,16 @@ function capturar(posicao) {
     const lon = position.coords.longitude.toFixed(6);
     const url = `${SCRIPT_URL}?area=${encodeURIComponent(area)}&posicao=${posicao}&lat=${lat}&lon=${lon}`;
 
-    fetch(url)
-      .then(() => {
-        document.getElementById('status').innerText = `✅ ${area} - Posição ${posicao} salva (${lat}, ${lon})`;
-      })
-      .catch(() => {
-        document.getElementById('status').innerText = "❌ Erro ao enviar dados.";
-      });
-  }
+fetch('https://script.google.com/macros/s/AKfycbxExemploDaSuaURL/exec', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    doca: doca,
+    ponto: ponto,
+    lat: latitude,
+    lng: longitude
+  })
+})
 
   function error(err) {
     document.getElementById('status').innerText =
@@ -64,3 +66,4 @@ function capturar(posicao) {
 </script>
 </body>
 </html>
+
