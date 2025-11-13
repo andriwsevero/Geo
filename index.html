@@ -14,10 +14,7 @@
       background: #f5f7fa;
       color: #333;
     }
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    header { text-align: center; margin-bottom: 20px; }
     h1 {
       font-size: 1.5em;
       color: #1a5fb4;
@@ -79,10 +76,7 @@
       padding: 10px 8px;
       border-bottom: 1px solid #eee;
     }
-    th {
-      background: #f1f5f9;
-      font-weight: bold;
-    }
+    th { background: #f1f5f9; font-weight: bold; }
     tr:last-child td { border-bottom: none; }
 
     .actions {
@@ -93,10 +87,14 @@
     .actions button {
       flex: 1;
       min-width: 120px;
+      border: none;
+      color: white;
+      font-weight: bold;
     }
     .btn-alt { background: #4caf50; }
     .btn-copy { background: #2196f3; }
-    .btn-whatsapp { background: #25d366; color: white; }
+    .btn-whatsapp { background: #25d366; }
+    .btn-clear { background: #f44336; }
   </style>
 </head>
 <body>
@@ -141,6 +139,7 @@
       <button class="btn-alt" onclick="exportarCSV()">📥 Baixar CSV</button>
       <button class="btn-copy" onclick="copiarCSV()">📋 Copiar CSV</button>
       <button class="btn-whatsapp" onclick="enviarWhatsApp()">📱 WhatsApp</button>
+      <button class="btn-clear" onclick="limparRegistros()">🧹 Limpar</button>
     </div>
   </div>
 
@@ -265,13 +264,29 @@
         return;
       }
 
-      // Formata uma mensagem amigável + CSV como texto (WhatsApp aceita)
       const mensagem = `📍 *Registros GeoDocas*\n\n\`\`\`\n${csv}\n\`\`\``;
       const url = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
       window.open(url, '_blank');
     }
 
-    // Inicializa
+    function limparRegistros() {
+      if (registros.length === 0) {
+        atualizarStatus('⚠️ Nada para limpar.', 'warning');
+        return;
+      }
+
+      const confirmar = window.confirm('Tem certeza que deseja limpar todos os registros?');
+      if (!confirmar) {
+        atualizarStatus('ℹ️ Limpeza cancelada.', 'warning');
+        return;
+      }
+
+      registros.length = 0;
+      localStorage.removeItem('geoDocasRegistros');
+      atualizarTabela();
+      atualizarStatus('✅ Registros limpos com sucesso.', 'success');
+    }
+
     atualizarTabela();
   </script>
 </body>
